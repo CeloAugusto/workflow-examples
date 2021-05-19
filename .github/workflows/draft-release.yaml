@@ -1,8 +1,14 @@
 name: Draft Release
 
-# Should run when push a new tag. See "events-cases.yml" for examples.
 on:
-  - workflow_dispatch
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'The name of the tag.'
+        required: true
+  push:
+    tags:
+      - "v*"
 
 jobs:
   draft-release:
@@ -33,7 +39,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.event.inputs.tag_name || github.ref }}
+          release_name: Release ${{ github.event.inputs.tag_name || github.ref }}
           body_path: CHANGES.txt
           draft: true # Recommend always true, to validate the release manualy before publish it.
