@@ -12,8 +12,11 @@ on:
 
 jobs:
   draft-release:
-    name: Draft Release ${{ github.ref }}
+    name: Draft Release ${{ github.event.inputs.tag_name || github.ref }}
     runs-on: ubuntu-latest
+    env:
+      version: ${{ github.event.inputs.tag_name || github.ref }}
+
     steps:
       - uses: actions/checkout@v2
 
@@ -39,7 +42,16 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          tag_name: ${{ github.event.inputs.tag_name || github.ref }}
-          release_name: Release ${{ github.event.inputs.tag_name || github.ref }}
+          tag_name: ${{ env.version }}
+          release_name: Release ${{ env.version }}
           body_path: CHANGES.txt
           draft: true # Recommend always true, to validate the release manualy before publish it.
+
+      - name: Upload Build on Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
+          asset_path: ./CHANGES.txt # Obviously you must replace the file
+          asset_content_type: application/txt # Search for your MIME type if you need. Recommend do not upload jar. ex: "../gzip" instead of "../zip"
