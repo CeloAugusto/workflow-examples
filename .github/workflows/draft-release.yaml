@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       tag_name:
-        description: 'The name of the tag.'
+        description: "The name of the tag."
         required: true
   push:
     tags:
@@ -25,7 +25,7 @@ jobs:
       # d17a4a3 - (JohnDoe) Add more comments to release workflow
       # I added somes comments.
       # c1f1748 - (JohnDoe) Commiting more things
-      # """
+      # """.
       - name: Mount Body
         id: mount_body
         run: |
@@ -52,6 +52,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`.
-          asset_path: ./CHANGES.txt # Obviously you must replace the file
-          asset_content_type: application/txt # Search for your MIME type if you need. Recommend do not upload jar. ex: "../gzip" instead of "../zip"
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a "upload_url".
+          asset_path: ./CHANGES.txt # Obviously you must replace the file.
+          asset_content_type: application/txt # Search for your MIME type if you need. Recommend do not upload jar. ex: "../gzip" instead of "../zip".
