@@ -11,9 +11,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      # Uses commits with "git log" to mount the body of the release.
+      # ex: """
+      # d17a4a3 - (JohnDoe) Add more comments to release workflow
+      # I added somes comments.
+      # c1f1748 - (JohnDoe) Commiting more things
+      # """
       - name: Mount Body
         id: mount_body
-        run: git log --pretty=format:"%h - (%an) %s %n%b" --no-merges $((git describe --tags --abbrev=0 && echo ..) | sed '$!N; s/\n//')HEAD | awk 'NF' > CHANGES.txt
+        run: |
+          git log \
+          --pretty=format:"%h - (%an) %s %n%b" \
+          --no-merges \
+          $((git describe --tags --abbrev=0 && echo ..) | sed '$!N; s/\n//')HEAD \
+          | awk 'NF' \
+          > CHANGES.txt
 
       - name: Create Release
         id: create_release # Optional if not referenced by another step.
