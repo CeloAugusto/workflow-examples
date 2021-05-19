@@ -1,0 +1,22 @@
+name: Draft Release
+
+# Should run on pushes in master/main or tags. See "events-cases.yml" for examples.
+on:
+  - workflow_dispatch
+
+jobs:
+  draft-release:
+    name: Draft Release ${{ github.ref }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create Release
+        id: create_release # Optional if not referenced by another step.
+        uses: actions/create-release@v1 # Warning: This actions is deprecated. See the repo for more details.
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: true # Recommend always true, to validate the release manualy before publish it.
